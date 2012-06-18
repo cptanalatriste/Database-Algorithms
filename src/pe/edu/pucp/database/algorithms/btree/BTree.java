@@ -86,65 +86,79 @@ public class BTree<Key extends Comparable<Key>, Value> {
 	 */
 	public void put(Key key, Value value) {
 		// TODO (cgavidia): Rename u and t variable names
-		Node<Key, Value> u = insert(root, key, value, height);
+		Node<Key, Value> nodeFromSplit = insert(root, key, value, height);
 		size++;
-		if (u == null) {
+		if (nodeFromSplit == null) {
 			return;
 		}
 
 		// need to split root
-		Node<Key, Value> t = new Node<Key, Value>(2);
-		t.getChildrenArray()[0] = new Entry<Key, Value>(
-				root.getChildrenArray()[0].getKey(), null, root);
-		t.getChildrenArray()[1] = new Entry<Key, Value>(u.getChildrenArray()[0]
-				.getKey(), null, u);
-		root = t;
+		Node<Key, Value> newRoot = new Node<Key, Value>(2);
+		newRoot.getChildrenArray()[0] = new Entry<Key, Value>(root
+				.getChildrenArray()[0].getKey(), null, root);
+		newRoot.getChildrenArray()[1] = new Entry<Key, Value>(nodeFromSplit
+				.getChildrenArray()[0].getKey(), null, nodeFromSplit);
+		root = newRoot;
 		height++;
+	}
+
+	@SuppressWarnings("unchecked")
+	public void put(Key key) {
+		put(key, (Value) key);
 	}
 
 	private Node<Key, Value> insert(Node<Key, Value> node, Key key,
 			Value value, int treeHeight) {
-		int j;
+		int newEntryPosition;
 		Entry<Key, Value> nodeToInsert = new Entry<Key, Value>(key, value, null);
 
 		// external node
 		if (treeHeight == 0) {
-			for (j = 0; j < node.getNumberOfChildren(); j++) {
-				if (less(key, node.getChildrenArray()[j].getKey())) {
+			for (newEntryPosition = 0; newEntryPosition < node
+					.getNumberOfChildren(); newEntryPosition++) {
+				if (less(key, node.getChildrenArray()[newEntryPosition]
+						.getKey())) {
 					break;
 				}
 
 			}
 		}
-
 		// internal node
 		else {
-			for (j = 0; j < node.getNumberOfChildren(); j++) {
-				if ((node.getNumberOfChildren() == j + 1)
-						|| less(key, node.getChildrenArray()[j + 1].getKey())) {
-					Node<Key, Value> u = insert(node.getChildrenArray()[j++]
-							.getNext(), key, value, treeHeight - 1);
-					if (u == null) {
+			for (newEntryPosition = 0; newEntryPosition < node
+					.getNumberOfChildren(); newEntryPosition++) {
+				if ((node.getNumberOfChildren() == newEntryPosition + 1)
+						|| less(key,
+								node.getChildrenArray()[newEntryPosition + 1]
+										.getKey())) {
+					Node<Key, Value> nodeFromSplit = insert(node
+							.getChildrenArray()[newEntryPosition++].getNext(),
+							key, value, treeHeight - 1);
+					if (nodeFromSplit == null) {
 						return null;
 					}
-					nodeToInsert.setKey(u.getChildrenArray()[0].getKey());
-					nodeToInsert.setNext(u);
+					nodeToInsert.setKey(nodeFromSplit.getChildrenArray()[0]
+							.getKey());
+					nodeToInsert.setNext(nodeFromSplit);
 					break;
 				}
 			}
 		}
 
-		for (int i = node.getNumberOfChildren(); i > j; i--) {
+		for (int i = node.getNumberOfChildren(); i > newEntryPosition; i--) {
 			node.getChildrenArray()[i] = node.getChildrenArray()[i - 1];
 
 		}
 
-		node.getChildrenArray()[j] = nodeToInsert;
+		node.getChildrenArray()[newEntryPosition] = nodeToInsert;
 		node.setNumberOfChildren(node.getNumberOfChildren() + 1);
-		if (node.getNumberOfChildren() < M)
+		if (node.getNumberOfChildren() < M) {
 			return null;
-		else
+
+		} else {
 			return split(node);
+
+		}
 	}
 
 	/**

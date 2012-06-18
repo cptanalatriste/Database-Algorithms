@@ -41,7 +41,8 @@ public class Node<Key extends Comparable<Key>, Value> {
 	@Override
 	public String toString() {
 		String result = "{ ";
-		for (Entry entry : childrenArray) {
+		for (int i = 0; i < numberOfChildren; i++) {
+			Entry entry = childrenArray[i];
 			result = result + entry.toString() + ", ";
 		}
 		result = result + " }";

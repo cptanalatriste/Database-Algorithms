@@ -25,7 +25,8 @@ public class AlgoritmTester {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		BTree<String, String> bTreeForTest = getBtreeForTest();
+
+		BTree<String, String> bTreeForTest = getStringBtreeForTest();
 
 		System.out.println("cs.princeton.edu:  "
 				+ bTreeForTest.get(CS_PRINCETON_KEY));
@@ -39,9 +40,14 @@ public class AlgoritmTester {
 		System.out.println("size:    " + bTreeForTest.getSize());
 		System.out.println("height:  " + bTreeForTest.getHeight());
 		System.out.println(bTreeForTest);
+
+		BTree<Integer, Integer> anotherBTree = getIntegerBtreeForTest();
+		System.out.println("size:    " + anotherBTree.getSize());
+		System.out.println("height:  " + anotherBTree.getHeight());
+		System.out.println(anotherBTree);
 	}
 
-	private static BTree<String, String> getBtreeForTest() {
+	private static BTree<String, String> getStringBtreeForTest() {
 		BTree<String, String> btree = new BTree<String, String>();
 
 		btree.put(CS_PRINCETON_KEY, CS_PRINCETON_VALUE);
@@ -62,6 +68,29 @@ public class AlgoritmTester {
 		btree.put("www.espn.com", "199.181.135.201");
 		btree.put("www.weather.com", "63.111.66.11");
 		btree.put("www.yahoo.com", "216.109.118.65");
+
+		return btree;
+	}
+
+	private static BTree<Integer, Integer> getIntegerBtreeForTest() {
+		BTree<Integer, Integer> btree = new BTree<Integer, Integer>();
+
+		btree.put(20);
+		btree.put(30);
+		btree.put(40);
+		btree.put(35);
+		btree.put(36);
+		btree.put(25);
+		btree.put(5);
+		btree.put(22);
+		btree.put(15);
+		btree.put(7);
+		btree.put(6);
+		btree.put(1);
+		btree.put(4);
+		btree.put(8);
+		btree.put(18);
+		btree.put(50);
 
 		return btree;
 	}
